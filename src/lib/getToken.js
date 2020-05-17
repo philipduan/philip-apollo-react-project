@@ -6,7 +6,7 @@ const requestPromise = util.promisify(request);
 export default async function (username, password) {
   const options = {
     method: "POST",
-    url: `http://${process.env.AUTH0_DOMAIN}/oauth/token`,
+    url: `https://${process.env.AUTH0_DOMAIN}/oauth/token`,
     headers: { "content-type": "application/x-www-form-urlencoded" },
     form: {
       audience: process.env.AUTH0_AUDIENCE,
