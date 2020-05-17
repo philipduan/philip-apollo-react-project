@@ -5,6 +5,8 @@ const typeDefs = gql`
     id: ID!
     createdAt: String!
     email: String!
+    isBlocked: Boolean
+    isModerator: Boolean
   }
 
   extend type Query {
@@ -29,6 +31,8 @@ const typeDefs = gql`
   }
 
   extend type Mutation {
+    changeAccountBlockedStatus(where: AccountWhereUniqueInput): Account!
+    changeAccountModeratorRole(where: AccountWhereUniqueInput): Account!
     createAccount(data: CreateAccountInput!): Account!
     deleteAccount(where: AccountWhereUniqueInput!): Boolean!
     updateAccount(
