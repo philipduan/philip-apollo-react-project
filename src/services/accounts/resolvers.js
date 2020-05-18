@@ -29,14 +29,14 @@ const resolvers = {
   },
   Query: {
     account(parent, { id }, context, info) {
-      return auth0.getUser({ id });
+      return dataSources.accountsApi.getAccountById(id);
     },
     accounts(parent, args, context, info) {
-      return auth0.getUsers();
+      return dataSources.accountsApi.getAccounts();
     },
     viewer(parent, args, { user }, info) {
       if (user && user.sub) {
-        return auth0.getUser({ id: user.sub });
+        return dataSources.accountsApi.getAccountById(user.sub);
       }
       return null;
     },
