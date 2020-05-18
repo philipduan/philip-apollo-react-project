@@ -3,13 +3,6 @@ import { UserInputError } from "apollo-server";
 import auth0 from "../../config/auth0";
 import getToken from "../../lib/getToken";
 
-const accounts = [
-  {
-    id: "1",
-    email: "devchirp@mandiwise.com",
-  },
-];
-
 const resolvers = {
   Account: {
     __resolveReference(reference, context, info) {
