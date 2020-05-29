@@ -2,14 +2,15 @@ import { ApolloServer } from "apollo-server";
 import { applyMiddleware } from "graphql-middleware";
 import { buildFederatedSchema } from "@apollo/federation";
 
-import AccountsDataSource from "./datasources/AccountsDataSource";
-import auth0 from "../../config/auth0";
+import initMongosse from "../../config/mongoose";
 import permissions from "./permissions";
+import Profile from "../../models";
+import ProfilesDataSource from "./datasources/ProfilesDataSource";
 import resolvers from "./resolvers";
 import typeDefs from "./typeDefs";
 
 (async () => {
-  const port = process.env.ACCOUNTS_SERVICE_PORT;
+  const port = process.env.PROFILES_SERVICE_PORT;
 
   const schema = applyMiddleware(
     buildFederatedSchema([{ typeDefs, resolvers }]),
@@ -24,10 +25,13 @@ import typeDefs from "./typeDefs";
     },
     dataSources: () => {
       return {
-        accountsAPI: new AccountsDataSource({ auth0 }),
+        profilesAPI: new ProfilesDataSource({ Profile }),
       };
     },
   });
+
+  initMongosse();
+
   const { url } = await server.listen({ port });
-  console.log(`Accounts service ready at ${url}`);
+  console.log(`Profiles service ready at ${url}`);
 })();

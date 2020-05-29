@@ -1,13 +1,10 @@
-import { UserInputError } from "apollo-server";
-
 import { DateTimeResolver } from "../../lib/customScalars";
-import getToken from "../../lib/getToken";
 
 const resolvers = {
   DateTime: DateTimeResolver,
   Account: {
     __resolveReference(reference, { dataSources }, info) {
-      return dataSources.accountsApi.getAccountById(reference.id);
+      return dataSources.accountsAPI.getAccountById(reference.id);
     },
     id(account, args, { dataSources }, info) {
       return account.user_id;
@@ -28,14 +25,14 @@ const resolvers = {
   },
   Query: {
     account(parent, { id }, { dataSources }, info) {
-      return dataSources.accountsApi.getAccountById(id);
+      return dataSources.accountsAPI.getAccountById(id);
     },
     accounts(parent, args, { dataSources }, info) {
-      return dataSources.accountsApi.getAccounts();
+      return dataSources.accountsAPI.getAccounts();
     },
     viewer(parent, args, { user }, info) {
       if (user && user.sub) {
-        return dataSources.accountsApi.getAccountById(user.sub);
+        return dataSources.accountsAPI.getAccountById(user.sub);
       }
       return null;
     },
@@ -47,7 +44,7 @@ const resolvers = {
       { dataSources },
       info
     ) {
-      return dataSources.accountsApi.changeAccountBlockedStatus(id);
+      return dataSources.accountsAPI.changeAccountBlockedStatus(id);
     },
     changeAccountModeratorRole(
       parent,
@@ -55,7 +52,7 @@ const resolvers = {
       { dataSources },
       info
     ) {
-      return dataSources.accountsApi.changeAccountModeratorRole(id);
+      return dataSources.accountsAPI.changeAccountModeratorRole(id);
     },
     createAccount(
       parent,
@@ -63,13 +60,13 @@ const resolvers = {
       { dataSources },
       info
     ) {
-      return dataSources.accountsApi.createAccount(email, password);
+      return dataSources.accountsAPI.createAccount(email, password);
     },
     deleteAccount(parent, { where: { id } }, { dataSources }, info) {
-      return dataSources.accountsApi.deleteAccount(id);
+      return dataSources.accountsAPI.deleteAccount(id);
     },
     updateAccount(parent, { data, where: { id } }, { dataSources }, info) {
-      return dataSources.accountsApi.updateAccount(id, data);
+      return dataSources.accountsAPI.updateAccount(id, data);
     },
   },
 };
