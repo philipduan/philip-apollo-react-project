@@ -52,6 +52,13 @@ const resolvers = {
       { dataSources },
       info
     ) {
+      dataSources.accountsAPI
+        .changeAccountModeratorRole(id)
+        .then((response) =>
+          console
+            .log("response", response)
+            .catch((error) => console.log("error", error))
+        );
       return dataSources.accountsAPI.changeAccountModeratorRole(id);
     },
     createAccount(

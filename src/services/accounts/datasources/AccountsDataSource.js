@@ -50,7 +50,7 @@ class AccountsDataSource extends DataSource {
     const roles = isModerator ? ["author"] : ["moderator"];
     const permissions = isModerator
       ? this.authorPermissions
-      : this.authorPermissions.concat(moderatorPermissions);
+      : this.authorPermissions.concat(this.moderatorPermissions);
 
     return this.auth0.updateUser(
       { id },
