@@ -17,6 +17,14 @@ class ProfilesDataSource extends DataSource {
     return newProfile.save();
   }
 
+  async deleteProfile(username) {
+    const deleteProfile = await this.Profile.findOneAndDelete({
+      username,
+    }).exec();
+
+    return deleteProfile._id;
+  }
+
   getProfile(filter) {
     return this.Profile.findOne(filter).exec();
   }
@@ -34,6 +42,22 @@ class ProfilesDataSource extends DataSource {
       accountId: viewerAccountId,
     }).exec();
     return viewerProfile.following.includes(profileId);
+  }
+
+  updateProfile(currentUsername, { description, fullname, username }) {
+    if (!description && !fullname && !username) {
+      throw new UserInputError("You must supply some profile data to update");
+    }
+
+    const data = {
+      ...(description && { description }),
+      ...(fullname && { fullname }),
+      ...(username && { username }),
+    };
+
+    return this.Profile.findOneAndUpdate({ username: currentUsername }, data, {
+      new: true,
+    });
   }
 }
 

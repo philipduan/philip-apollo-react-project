@@ -29,11 +29,22 @@ const resolvers = {
     createProfile(parent, { data }, { dataSources }, info) {
       return dataSources.profilesAPI.createProfile(data);
     },
+    deleteProfile(parent, { where: { username } }, { dataSources }, info) {
+      return dataSources.profilesAPI.deleteProfile(username);
+    },
+    updateProfile(
+      parent,
+      { data, where: { username: currentUsername } },
+      { dataSources },
+      info
+    ) {
+      return dataSources.profilesAPI.updateProfile(currentUsername, data);
+    },
   },
 
   Query: {
-    async ProfilesDataSource(parent, { username }, { dataSources }, info) {
-      const profile = await dataSources.profilessAPI.getProfile({ username });
+    async profile(parent, { username }, { dataSources }, info) {
+      const profile = await dataSources.profilesAPI.getProfile({ username });
 
       if (!profile) {
         throw new UserInputError("Profile does not exist");
