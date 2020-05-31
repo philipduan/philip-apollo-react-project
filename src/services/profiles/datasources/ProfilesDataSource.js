@@ -60,6 +60,15 @@ class ProfilesDataSource extends DataSource {
     return this.Profile.find({}).exec();
   }
 
+  searchProfiles(searchString) {
+    return this.Profile.find(
+      { $text: { $search: searchString } },
+      { score: { $meta: "textScore" } }
+    )
+      .sort({ score: { $meta: "textScore" }, _id: -1 })
+      .exec();
+  }
+
   unfollowProfile(username, profileIdToUnfollow) {
     return this.Profile.findOneAndUpdate(
       { username },

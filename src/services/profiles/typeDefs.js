@@ -52,6 +52,14 @@ const typeDefs = gql`
   }
 
   """
+  Provides a seach string to query users by usernames or full names
+  """
+  input ProfileSearchInput {
+    "The  text string to search for in usernames of full names"
+    text: String!
+  }
+
+  """
   Provides the unique username of an existing profile
   """
   input ProfileWhereUniqueInput {
@@ -99,6 +107,9 @@ const typeDefs = gql`
 
     "Retrieves a list of profiles"
     profiles: [Profile]
+
+    "Performs a search of user profiles"
+    searchProfiles(query: ProfileSearchInput!): [Profile]
   }
 `;
 
