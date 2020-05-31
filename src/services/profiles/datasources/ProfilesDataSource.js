@@ -8,6 +8,13 @@ class ProfilesDataSource extends DataSource {
     this.Profile = Profile;
   }
 
+  async checkViewerFollowsProfile(viewerAccountId, profileId) {
+    const viewerProfile = await this.Profile.findOne({
+      accountId: viewerAccountId,
+    }).exec();
+    return viewerProfile.following.includes(profileId);
+  }
+
   async createProfile(profile) {
     const account = await this.auth0.getUser({ id: profile.accountId });
     const avatar = gravatarUrl(account.email, { default: "mm" });
@@ -25,6 +32,22 @@ class ProfilesDataSource extends DataSource {
     return deleteProfile._id;
   }
 
+  followProfile(username, profileIdToFollow) {
+    return this.Profile.findOneAndUpdate(
+      { username },
+      { $addToSet: { following: profileIdToFollow } },
+      { new: true }
+    );
+  }
+
+  getFollowedProfiles(following) {
+    return this.Profile.find({
+      _id: {
+        $in: following,
+      },
+    }).exec();
+  }
+
   getProfile(filter) {
     return this.Profile.findOne(filter).exec();
   }
@@ -37,11 +60,12 @@ class ProfilesDataSource extends DataSource {
     return this.Profile.find({}).exec();
   }
 
-  async checkViewerFollowsProfile(viewerAccountId, profileId) {
-    const viewerProfile = await this.Profile.findOne({
-      accountId: viewerAccountId,
-    }).exec();
-    return viewerProfile.following.includes(profileId);
+  unfollowProfile(username, profileIdToUnfollow) {
+    return this.Profile.findOneAndUpdate(
+      { username },
+      { $pull: { following: profileIdToUnfollow } },
+      { new: true }
+    );
   }
 
   updateProfile(currentUsername, { description, fullname, username }) {
