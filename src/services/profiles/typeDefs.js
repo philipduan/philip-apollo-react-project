@@ -1,32 +1,14 @@
 import { gql } from "apollo-server";
 
 const typeDefs = gql`
-  extend type Account @key(fields: "id") {
-    id: ID! @external
-    "Metadata about the user that owns the account"
-    profile: Profile
-  }
-
-  extend type Mutation {
-    "Creates a new profile tied to an Auth0 account"
-    createProfile(data: CreateProfileInput!): Profile!
-    "Deletes a user profile"
-    deleteProfile(where: ProfileWhereUniqueInput!): ID!
-    "Allows one user to follow another"
-    followProfile(
-      data: FollowingProfileInput!
-      where: ProfileWhereUniqueInput!
-    ): Profile!
-    "Allows one user to unfollow another"
-    unfollowProfile(
-      data: FollowingProfileInput!
-      where: ProfileWhereUniqueInput!
-    ): Profile!
-    "Updates a user's profile details"
-    updateProfile(
-      data: UpdateProfileInput!
-      where: ProfileWhereUniqueInput!
-    ): Profile!
+  """
+  Sorting options for profile connections
+  """
+  enum ProfileOrderByInput {
+    "Order profile ascending by username"
+    username_ASC
+    "Order profile descending by username"
+    username_DESC
   }
 
   """
@@ -80,6 +62,20 @@ const typeDefs = gql`
   }
 
   """
+  Information about pagination in a connection
+  """
+  type PageInfo {
+    "The cursor to continue from when paginating forward"
+    endCursor: string
+    "Whether there are more items when paginating forward"
+    hasNextPage: Boolean!
+    "Whether there are more items when paginating backward"
+    hasPreviousPage: Boolean!
+    "The cursor to continue from when paginating backward"
+    startCursor: String
+  }
+
+  """
   A profile conttains metadata about a specific user.
   """
   type Profile @key(fields: "id") {
@@ -99,6 +95,54 @@ const typeDefs = gql`
     username: String!
     "Whether the currently logged in user follows this profile"
     viewerIsFollowing: Boolean
+  }
+
+  """
+  A list of profile edges with pagination information
+  """
+  type ProfileConnection {
+    "A list of profile edges"
+    edges: [ProfileEdge]
+    "Information to assist with pagniation"
+    pageInfo: PageInfo!
+  }
+
+  """
+  "A single profile node with its cursor"
+  """
+  type ProfileEdge {
+    "A cursor for use in pagination"
+    cursor: ID!
+    "A profile at the end of an edge"
+    node: Profile!
+  }
+
+  extend type Account @key(fields: "id") {
+    id: ID! @external
+    "Metadata about the user that owns the account"
+    profile: Profile
+  }
+
+  extend type Mutation {
+    "Creates a new profile tied to an Auth0 account"
+    createProfile(data: CreateProfileInput!): Profile!
+    "Deletes a user profile"
+    deleteProfile(where: ProfileWhereUniqueInput!): ID!
+    "Allows one user to follow another"
+    followProfile(
+      data: FollowingProfileInput!
+      where: ProfileWhereUniqueInput!
+    ): Profile!
+    "Allows one user to unfollow another"
+    unfollowProfile(
+      data: FollowingProfileInput!
+      where: ProfileWhereUniqueInput!
+    ): Profile!
+    "Updates a user's profile details"
+    updateProfile(
+      data: UpdateProfileInput!
+      where: ProfileWhereUniqueInput!
+    ): Profile!
   }
 
   extend type Query {
