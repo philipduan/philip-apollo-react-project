@@ -27,7 +27,7 @@ class AccountsDataSource extends DataSource {
   }
 
   createAccount(email, password) {
-    return this.auth0.createAccount({
+    return this.auth0.createUser({
       app_metadata: {
         groups: [],
         roles: ["author"],
