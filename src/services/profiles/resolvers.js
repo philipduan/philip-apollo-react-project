@@ -14,8 +14,11 @@ const resolvers = {
     account(profile, args, context, info) {
       return { __typename: "Account", id: profile.accountId };
     },
-    following(profile, ards, { dataSources }, info) {
-      return dataSources.profilesAPI.getFollowedProfiles(profile.following);
+    following(profile, args, { dataSources }, info) {
+      return dataSources.profilesAPI.getFollowedProfiles({
+        ...args,
+        following: profile.following,
+      });
     },
     id(profile, args, context, info) {
       return profile._id;

@@ -1,11 +1,15 @@
 import { DataSource } from "apollo-datasource";
 import { UserInputError } from "apollo-server";
 import gravatarUrl from "gravatar-url";
+
+import Pagination from "../../../lib/Pagination";
+import e from "express";
 class ProfilesDataSource extends DataSource {
   constructor({ auth0, Profile }) {
     super();
     this.auth0 = auth0;
     this.Profile = Profile;
+    this.pagination = new Pagination(Profile);
   }
 
   async checkViewerFollowsProfile(viewerAccountId, profileId) {
@@ -40,12 +44,21 @@ class ProfilesDataSource extends DataSource {
     );
   }
 
-  getFollowedProfiles(following) {
-    return this.Profile.find({
-      _id: {
-        $in: following,
-      },
-    }).exec();
+  async getFollowedProfiles({
+    after,
+    before,
+    first,
+    last,
+    orderBy,
+    following,
+  }) {
+    const sort = this._getProfileSort(orderBy);
+    const filter = { _id: { $in: following } };
+    const queryArgs = { after, before, first, last, filter, sort };
+    const edges = await this.pagination.getPageInfo(edges, queryArgs);
+    const pageInfo = await this.pagination.getPageInfo(edges, queryArgs);
+
+    return { edges, pageInfo };
   }
 
   getProfile(filter) {
@@ -58,6 +71,20 @@ class ProfilesDataSource extends DataSource {
 
   getProfiles() {
     return this.Profile.find({}).exec();
+  }
+
+  _getProfileSort(sortEnum) {
+    let sort = {};
+
+    if (sortEnum) {
+      const sortArgs = sortEnum.split("_");
+      const [field, direction] = sortArgs;
+      sort[field] = direction === "DESC" ? -1 : 1;
+    } else {
+      sort.username = 1;
+    }
+
+    return sort;
   }
 
   searchProfiles(searchString) {
