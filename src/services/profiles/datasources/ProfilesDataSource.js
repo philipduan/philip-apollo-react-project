@@ -3,7 +3,7 @@ import { UserInputError } from "apollo-server";
 import gravatarUrl from "gravatar-url";
 
 import Pagination from "../../../lib/Pagination";
-import e from "express";
+
 class ProfilesDataSource extends DataSource {
   constructor({ auth0, Profile }) {
     super();
@@ -55,7 +55,7 @@ class ProfilesDataSource extends DataSource {
     const sort = this._getProfileSort(orderBy);
     const filter = { _id: { $in: following } };
     const queryArgs = { after, before, first, last, filter, sort };
-    const edges = await this.pagination.getPageInfo(edges, queryArgs);
+    const edges = await this.pagination.getEdges(queryArgs);
     const pageInfo = await this.pagination.getPageInfo(edges, queryArgs);
 
     return { edges, pageInfo };
