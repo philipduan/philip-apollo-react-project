@@ -5,7 +5,7 @@ import { buildFederatedSchema } from "@apollo/federation";
 import auth0 from "../../config/auth0";
 import initMongosse from "../../config/mongoose";
 import permissions from "./permissions";
-import Profile from "../../models/Profiles";
+import Profile from "../../models/Profile";
 import ProfilesDataSource from "./datasources/ProfilesDataSource";
 import resolvers from "./resolvers";
 import typeDefs from "./typeDefs";
