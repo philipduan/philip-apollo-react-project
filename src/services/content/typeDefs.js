@@ -220,6 +220,10 @@ const typeDefs = gql`
     createReply(data: CreateReplyInput!): Reply!
     "Deletes a reply to a post"
     deleteReply(where: ContentWhereUniqueInput!): ID!
+    "Toggles the current blocked state of the post"
+    togglePostBlock(where: ContentWhereUniqueInput!): Post!
+    "Toggles the curent blocked state of the reply"
+    toggleReplyBlock(where: ContentWhereUniqueInput!): Reply!
   }
 
   extend type Profile @key(fields: "id") {
