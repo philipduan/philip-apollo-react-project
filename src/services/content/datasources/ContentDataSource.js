@@ -27,6 +27,31 @@ class ContentDataSource extends DataSource {
     return newPost.save();
   }
 
+  async createReply({ postId, text, username }) {
+    const post = await this.Post.findById(postId)
+      .exec()
+      .catch(() => {
+        throw new UserInputError(
+          "You must provide a valid parent post ID for this reply"
+        );
+      });
+    const profile = await this.Profile.findOne({ username })
+      .exec()
+      .catch(() => {
+        throw new UserInputError(
+          "You must provide a valid username as the author of this reply"
+        );
+      });
+    const newReply = new this.Reply({
+      authorProfileId: profile._id,
+      text,
+      postId,
+      postAuthorProfileId: post.authorProfileId,
+    });
+
+    return newReply.save();
+  }
+
   _getContentSort(sortEnum) {
     let sort = {};
 
@@ -41,8 +66,17 @@ class ContentDataSource extends DataSource {
     return sort;
   }
 
+  async deletePost(id) {
+    const deletePost = await this.Post.findByIdAndDelete(id).exec();
+    return deletePost._id;
+  }
+
   getPostById(id) {
     return this.Post.findById(id);
+  }
+
+  getReplyById(id) {
+    return this.Reply.findById(id);
   }
 
   async getOwnPosts({ after, before, first, last, orderBy, authorProfileId }) {
@@ -51,6 +85,31 @@ class ContentDataSource extends DataSource {
     const queryArgs = { after, before, first, last, filter, sort };
     const edges = await this.postPagination.getEdges(queryArgs);
     const pageInfo = await this.postPagination.getPageInfo(edges, queryArgs);
+    return { edges, pageInfo };
+  }
+
+  async getOwnReplies({
+    after,
+    before,
+    first,
+    last,
+    orderBy,
+    authorProfileId,
+  }) {
+    const sort = this._getContentSort(orderBy);
+    const filter = { authorProfileId };
+    const queryArgs = { after, before, first, last, filter, sort };
+    const edges = await this.replyPagination.getEdges(queryArgs);
+    const pageInfo = await this.replyPagination.getPageInfo(edges, queryArgs);
+    return { edges, pageInfo };
+  }
+
+  async getPostReplies({ after, before, first, last, orderBy, postId }) {
+    const sort = this._getContentSort(orderBy);
+    const filter = { postId };
+    const queryArgs = { after, before, first, last, filter, sort };
+    const edges = await this.replyPagination.getEdges(queryArgs);
+    const pageInfo = await this.replyPagination.getPageInfo(edges, queryArgs);
     return { edges, pageInfo };
   }
 
@@ -73,6 +132,42 @@ class ContentDataSource extends DataSource {
 
     if (rawFilter && rawFilter.includeBlocked === false) {
       filter.blocked = { $in: [null, false] };
+    }
+
+    const sort = this._getContentSort(orderBy);
+    const queryArgs = { after, before, first, last, filter, sort };
+    const edges = await this.postPagination.getEdges(queryArgs);
+    const pageInfo = await this.postPagination.getPageInfo(edges, queryArgs);
+
+    return { edges, pageInfo };
+  }
+
+  async getReplies({ after, before, first, last, orderBy, filter: rawFilter }) {
+    const { to, from } = rawFilter;
+
+    if (!to && !from) {
+      throw new UserInputError(
+        "You must provide a username to get replies to or from"
+      );
+    } else if (to && from) {
+      throw new UserInputError(
+        "You may only provide a 'to' or 'from' argument"
+      );
+    }
+
+    let filter = {};
+    const profile = await this.Profile.findOne({
+      username: from || to,
+    }).exec();
+
+    if (!profile) {
+      throw new UserInputError("USer with that username cannot be found");
+    }
+
+    if (from) {
+      filter.authorProfileId = profile._id;
+    } else {
+      filter.postAuthorProfileId = profile._id;
     }
 
     const sort = this._getContentSort(orderBy);
