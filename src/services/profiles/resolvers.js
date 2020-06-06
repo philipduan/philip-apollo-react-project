@@ -9,7 +9,7 @@ const resolvers = {
 
   Profile: {
     __resolveReference(reference, { dataSources }, info) {
-      return dataSources.profilesAPI;
+      return dataSources.profilesAPI.getProfileById(reference.id);
     },
     account(profile, args, context, info) {
       return { __typename: "Account", id: profile.accountId };

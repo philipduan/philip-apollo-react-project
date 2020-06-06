@@ -11,7 +11,7 @@ import Reply from "../../models/Reply";
 import resolvers from "./resolvers";
 import typeDefs from "./typeDefs";
 
-async () => {
+(async () => {
   const port = process.env.CONTENT_SERVICE_PORT;
 
   const schema = applyMiddleware(
@@ -27,7 +27,7 @@ async () => {
     },
     dataSources: () => {
       return {
-        contentAPI: new ContentDataSource({ Post, Profiles, Reply }),
+        contentAPI: new ContentDataSource({ Post, Profile, Reply }),
       };
     },
   });
@@ -36,4 +36,4 @@ async () => {
 
   const { url } = await server.listen({ port });
   console.log(`Content service ready at ${url}`);
-};
+})();

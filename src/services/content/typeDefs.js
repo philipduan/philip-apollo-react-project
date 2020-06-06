@@ -12,6 +12,16 @@ const typeDefs = gql`
   }
 
   """
+  Provides data to create a post
+  """
+  input CreatePostInput {
+    "The body content of the post (max. 256 characters)"
+    text: String!
+    "The unique username of the user who authored the post"
+    username: String!
+  }
+
+  """
   Provides a filter on which postst may be queried
   """
   input PostWhereInput {
@@ -27,7 +37,6 @@ const typeDefs = gql`
     Default is 'true'
     """
     includeBlocked: Boolean
-
   }
 
   """
@@ -47,6 +56,16 @@ const typeDefs = gql`
     hasPreviousPage: Boolean!
     "The cursor to continue from when paginating backward"
     startCursor: String
+  }
+
+  """
+  A list of post edges with pagination information
+  """
+  type PostConnection {
+    "A list of post edges"
+    edges: [PostEdge]
+    "Information to assist with pagination"
+    pageInfo: PageInfo!
   }
 
   """
@@ -77,6 +96,11 @@ const typeDefs = gql`
     text: String!
   }
 
+  extend type Mutation {
+    "Create a new post"
+    createPost(data: CreatePostInput!): Post!
+  }
+
   extend type Profile @key(fields: "id") {
     id: ID! @external
     "A list of posts written by the user"
@@ -85,7 +109,7 @@ const typeDefs = gql`
       before: String
       first: Int
       last: Int
-      orderBy PostOrderByInput
+      orderBy: PostOrderByInput
     ): PostConnection
   }
 

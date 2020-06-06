@@ -1,5 +1,12 @@
+import { DateTimeResolver } from "../../lib/customScalars";
+
 const resolvers = {
   DateTime: DateTimeResolver,
+  Mutation: {
+    createPost(parent, { data }, { dataSources }, info) {
+      return dataSources.contentAPI.createPost(data);
+    },
+  },
   Post: {
     author(post, args, context, info) {
       return { __typename: "Profile", id: post.authorProfileId };
@@ -13,6 +20,8 @@ const resolvers = {
   },
   Profile: {
     posts(profile, args, { dataSources }, info) {
+      console.log("posts -> profile", profile);
+
       return dataSources.contentAPI.getOwnPosts({
         ...args,
         authorProfileId: profile.id,
