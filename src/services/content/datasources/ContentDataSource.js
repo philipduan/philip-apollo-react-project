@@ -15,7 +15,6 @@ class ContentDataSource extends DataSource {
 
   async createPost({ text, username }) {
     const profile = await this.Profile.findOne({ username }).exec();
-    console.log("createPost -> profile", profile);
 
     if (!profile) {
       throw new UserInputError(
@@ -24,7 +23,6 @@ class ContentDataSource extends DataSource {
     }
 
     const newPost = new this.Post({ authorProfileId: profile._id, text });
-    console.log("createPost -> newPost", newPost);
 
     return newPost.save();
   }
