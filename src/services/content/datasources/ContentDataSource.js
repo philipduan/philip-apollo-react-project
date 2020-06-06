@@ -172,8 +172,8 @@ class ContentDataSource extends DataSource {
 
     const sort = this._getContentSort(orderBy);
     const queryArgs = { after, before, first, last, filter, sort };
-    const edges = await this.postPagination.getEdges(queryArgs);
-    const pageInfo = await this.postPagination.getPageInfo(edges, queryArgs);
+    const edges = await this.replyPagination.getEdges(queryArgs);
+    const pageInfo = await this.replyPagination.getPageInfo(edges, queryArgs);
 
     return { edges, pageInfo };
   }

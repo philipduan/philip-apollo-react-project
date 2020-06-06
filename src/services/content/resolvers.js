@@ -41,8 +41,6 @@ const resolvers = {
   },
   Profile: {
     posts(profile, args, { dataSources }, info) {
-      console.log("posts -> profile", profile);
-
       return dataSources.contentAPI.getOwnPosts({
         ...args,
         authorProfileId: profile.id,
@@ -68,7 +66,7 @@ const resolvers = {
     post(reply, args, { dataSources }, info) {
       return dataSources.contentAPI.getPostById(reply.postId);
     },
-    psotAuthor(reply, args, { dataSources }, info) {
+    postAuthor(reply, args, { dataSources }, info) {
       return { __typename: "Profile", id: reply.postAuthorProfileId };
     },
   },
