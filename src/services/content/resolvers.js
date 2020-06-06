@@ -21,6 +21,9 @@ const resolvers = {
     deletePost(parent, { where: { id } }, { dataSources }, info) {
       return dataSources.contentAPI.deletePost(id);
     },
+    deleteReply(parent, { where: { id } }, { dataSources }, info) {
+      return dataSources.contentAPI.deleteReply(id);
+    },
   },
   Post: {
     author(post, args, context, info) {

@@ -71,6 +71,11 @@ class ContentDataSource extends DataSource {
     return deletePost._id;
   }
 
+  async deleteReply(id) {
+    const deletedReply = await this.Reply.findByIdAndDelete(id).exec();
+    return deletedReply._id;
+  }
+
   getPostById(id) {
     return this.Post.findById(id);
   }
