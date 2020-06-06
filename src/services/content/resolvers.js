@@ -6,6 +6,9 @@ const resolvers = {
     createPost(parent, { data }, { dataSources }, info) {
       return dataSources.contentAPI.createPost(data);
     },
+    deletePost(parent, { where: { id } }, { dataSources }, info) {
+      return dataSources.contentAPI.deletePost(id);
+    },
   },
   Post: {
     author(post, args, context, info) {

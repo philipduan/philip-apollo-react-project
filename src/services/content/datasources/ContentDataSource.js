@@ -41,6 +41,11 @@ class ContentDataSource extends DataSource {
     return sort;
   }
 
+  async deletePost(id) {
+    const deletePost = await this.Post.findByIdAndDelete(id).exec();
+    return deletePost._id;
+  }
+
   getPostById(id) {
     return this.Post.findById(id);
   }

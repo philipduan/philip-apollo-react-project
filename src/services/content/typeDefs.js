@@ -12,6 +12,14 @@ const typeDefs = gql`
   }
 
   """
+  Provides the unique ID of an existing piece of content
+  """
+  input ContentWhereUniqueInput {
+    "The unique MongoDB document ID associated with the content"
+    id: ID!
+  }
+
+  """
   Provides data to create a post
   """
   input CreatePostInput {
@@ -99,6 +107,8 @@ const typeDefs = gql`
   extend type Mutation {
     "Create a new post"
     createPost(data: CreatePostInput!): Post!
+    "Deletes a post"
+    deletePost(where: ContentWhereUniqueInput!): ID!
   }
 
   extend type Profile @key(fields: "id") {
