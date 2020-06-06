@@ -2,9 +2,21 @@ import { DateTimeResolver } from "../../lib/customScalars";
 
 const resolvers = {
   DateTime: DateTimeResolver,
+  Content: {
+    __resolveType(content, context, info) {
+      if (content.postId) {
+        return "Reply";
+      } else {
+        return "Post";
+      }
+    },
+  },
   Mutation: {
     createPost(parent, { data }, { dataSources }, info) {
       return dataSources.contentAPI.createPost(data);
+    },
+    createReply(parent, { data }, { dataSources }, info) {
+      return dataSources.contentAPI.createReply(data);
     },
     deletePost(parent, { where: { id } }, { dataSources }, info) {
       return dataSources.contentAPI.deletePost(id);
@@ -20,6 +32,12 @@ const resolvers = {
     isBlocked(post, args, context, info) {
       return post.blocked;
     },
+    replies(post, args, { dataSources }, info) {
+      return dataSources.contentAPI.getPostReplies({
+        ...args,
+        postId: post._id,
+      });
+    },
   },
   Profile: {
     posts(profile, args, { dataSources }, info) {
@@ -30,6 +48,29 @@ const resolvers = {
         authorProfileId: profile.id,
       });
     },
+    replies(profile, args, { dataSources }, info) {
+      return dataSources.contentAPI.getOwnReplies({
+        ...args,
+        authorProfileId: profile.id,
+      });
+    },
+  },
+  Reply: {
+    author(reply, args, context, info) {
+      return { __typename: "Profile", id: reply.authorProfileId };
+    },
+    id(reply, args, context, info) {
+      return reply._id;
+    },
+    isBlocked(reply, args, context, info) {
+      return reply.blocked;
+    },
+    post(reply, args, { dataSources }, info) {
+      return dataSources.contentAPI.getPostById(reply.postId);
+    },
+    psotAuthor(reply, args, { dataSources }, info) {
+      return { __typename: "Profile", id: reply.postAuthorProfileId };
+    },
   },
   Query: {
     post(parent, { id }, { dataSources }, info) {
@@ -37,6 +78,12 @@ const resolvers = {
     },
     posts(parent, args, { dataSources }, info) {
       return dataSources.contentAPI.getPosts(args);
+    },
+    reply(parent, { id }, { dataSources }, info) {
+      return dataSources.contentAPI.getReplyById(id);
+    },
+    replies(parent, args, { dataSources }, info) {
+      return dataSources.contentAPI.getReplies(args);
     },
   },
 };
