@@ -52,6 +52,14 @@ const typeDefs = gql`
   }
 
   """
+  Provides a search string to query posts by text in their body content
+  """
+  input PostSearchInput {
+    "The text string to search for in the post content"
+    text: String!
+  }
+
+  """
   Provides a filter on which postst may be queried
   """
   input PostWhereInput {
@@ -257,6 +265,16 @@ const typeDefs = gql`
       orderBy: ReplyOrderByInput
       filter: ReplyWhereInput!
     ): ReplyConnection
+    """
+    Performs a search of posts
+
+    Results are available in descending orer by relevance only
+    """
+    searchPosts(
+      after: String
+      first: Int
+      query: PostSearchInput!
+    ): PostConnection
   }
 `;
 

@@ -182,6 +182,16 @@ class ContentDataSource extends DataSource {
 
     return { edges, pageInfo };
   }
+
+  async searchPosts({ after, first, searchString }) {
+    const sort = { score: { $meta: "textScore" }, _id: 1 };
+    const filter = { $text: { $search: searchString } };
+    const queryArgs = { after, first, filter, sort };
+    const edges = await this.postPagination.getEdges(queryArgs);
+    const pageInfo = await this.postPagination.getPageInfo(edges, queryArgs);
+
+    return { edges, pageInfo };
+  }
 }
 
 export default ContentDataSource;

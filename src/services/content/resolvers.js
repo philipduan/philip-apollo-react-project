@@ -86,6 +86,18 @@ const resolvers = {
     replies(parent, args, { dataSources }, info) {
       return dataSources.contentAPI.getReplies(args);
     },
+    searchPosts(
+      parent,
+      { after, first, query: { text } },
+      { dataSources },
+      info
+    ) {
+      return dataSources.contentAPI.searchPosts({
+        after,
+        first,
+        searchString: text,
+      });
+    },
   },
 };
 
