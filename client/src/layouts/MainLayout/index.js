@@ -1,6 +1,7 @@
 import { Box } from "grommet";
 import React from "react";
 
+import Container from "../../components/Container";
 import NavBar from "../../components/NavBar";
 import Footer from "../../components/Footer";
 
@@ -18,7 +19,7 @@ const MainLayout = ({ centered, children }) => (
       justify={centered ? "center" : "start"}
       margin="medium"
     >
-      {children}
+      <Container>{children}</Container>
     </Box>
     <Footer />
   </Box>
