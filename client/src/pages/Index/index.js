@@ -8,6 +8,7 @@ import MainLayout from "../../layouts/MainLayout";
 
 const Index = () => {
   const { login } = useAuth();
+
   return (
     <MainLayout centered>
       <Box align="center" margin={{ top: "small" }} width="100%">

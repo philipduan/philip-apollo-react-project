@@ -9,6 +9,7 @@ const initOptions = {
   domain: process.env.REACT_APP_AUTH0_DOMAIN,
   redirect_uri: process.env.REACT_APP_AUTH0_CALLBACK_URL,
 };
+
 const AuthContext = createContext();
 const useAuth = () => useContext(AuthContext);
 
@@ -29,6 +30,7 @@ const AuthProvider = ({ children }) => {
         }
 
         const authenticated = await client.isAuthenticated();
+
         setIsAuthenticated(authenticated);
 
         if (history.location.pathname !== "/login" && authenticated) {
@@ -43,7 +45,6 @@ const AuthProvider = ({ children }) => {
       }
     };
     initializeAuth0();
-    return () => {};
   }, []);
 
   return (

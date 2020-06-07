@@ -14,7 +14,7 @@ const rotate = keyframes`
 
 const StyledLoader = styled.div`
   ${(prop) =>
-    prop.center - no - captioned &&
+    prop.centered &&
     "left: 50%; position: absolute; top: 50%; transform: translate(-50%,-50%);"}
   svg {
     animation: ${rotate} 1.5s infinite;
