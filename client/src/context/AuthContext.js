@@ -30,6 +30,12 @@ const AuthProvider = ({ children }) => {
 
         const authenticated = await client.isAuthenticated();
         setIsAuthenticated(authenticated);
+
+        if (history.location.pathname !== "/login" && authenticated) {
+          history.replace("/home");
+        } else if (history.location.pathname === "/login") {
+          history.replace("/");
+        }
       } catch {
         history.location.pathname !== "/" && history.replace("/");
       } finally {
