@@ -2,10 +2,12 @@ import { Box } from "grommet";
 import { ChatOption } from "grommet-icons";
 import React from "react";
 
+import { useAuth } from "../../context/AuthContext";
 import AccentButton from "../../components/AccentButton";
 import MainLayout from "../../layouts/MainLayout";
 
 const Index = () => {
+  const { login } = useAuth();
   return (
     <MainLayout centered>
       <Box align="center" margin={{ top: "small" }} width="100%">
@@ -14,7 +16,7 @@ const Index = () => {
           <AccentButton
             label="Login / Sign-up"
             margin={{ top: "medium" }}
-            onClick={() => console.log("clicked")}
+            onClick={login}
           />
         </div>
       </Box>
