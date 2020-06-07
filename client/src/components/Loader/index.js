@@ -1,24 +1,18 @@
-import styled, { keyframes } from "styled-components";
+import { Refresh } from "grommet-icons";
+import React from "react";
 
-const rotate = keyframes`
-  0% {
-    transform: rotate(0deg)
-  }
-  50% {
-    transform: rotate(180deg)
-  }
-  100% {
-    transform: rotate(360deg)
-  }
-`;
+import StyledLoader from "./styles";
 
-const StyledLoader = styled.div`
-  ${(prop) =>
-    prop.centered &&
-    "left: 50%; position: absolute; top: 50%; transform: translate(-50%,-50%);"}
-  svg {
-    animation: ${rotate} 1.5s infinite;
-  }
-`;
+const Loader = ({ centered, color, size }) => (
+  <StyledLoader centered={centered}>
+    <Refresh color={color} size={size} />
+  </StyledLoader>
+);
 
-export default StyledLoader;
+Loader.defaultProps = {
+  centered: false,
+  color: "brand",
+  size: "large",
+};
+
+export default Loader;

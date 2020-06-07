@@ -56,7 +56,7 @@ const AuthProvider = ({ children }) => {
         logout: (...p) =>
           auth0Client.logout({
             ...p,
-            returnTo: process.env.AUTH0_LOGOUT_URL,
+            returnTo: process.env.REACT_APP_AUTH0_LOGOUT_URL,
           }),
       }}
     >

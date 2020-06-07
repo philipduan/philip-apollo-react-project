@@ -25,4 +25,8 @@ const MainLayout = ({ centered, children }) => (
   </Box>
 );
 
+MainLayout.defaultProps = {
+  centered: false,
+};
+
 export default MainLayout;
