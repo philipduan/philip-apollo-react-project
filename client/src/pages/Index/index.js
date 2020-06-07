@@ -1,10 +1,12 @@
 import React from "react";
 
+import MainLayout from "../../layouts/MainLayout";
+
 const Index = () => {
   return (
-    <div>
+    <MainLayout>
       <p>This is the index page.</p>
-    </div>
+    </MainLayout>
   );
 };
 
