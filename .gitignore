@@ -30,6 +30,6 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-.env
-node_modules/
+server/.env
+server/node_modules/
 # End of https://www.gitignore.io/api/web,macos
