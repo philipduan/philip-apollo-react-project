@@ -30,7 +30,7 @@ const resolvers = {
     accounts(parent, args, { dataSources }, info) {
       return dataSources.accountsAPI.getAccounts();
     },
-    viewer(parent, args, { user }, info) {
+    viewer(parent, args, { dataSources, user }, info) {
       if (user && user.sub) {
         return dataSources.accountsAPI.getAccountById(user.sub);
       }
