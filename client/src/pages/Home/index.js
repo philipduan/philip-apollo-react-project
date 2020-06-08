@@ -5,12 +5,19 @@ import MainLayout from "../../layouts/MainLayout";
 
 const Home = () => {
   const value = useAuth();
+  console.log("Home -> value", value);
 
   return (
     <MainLayout>
       <p>
         I am authenticated:{" "}
         {!value.checkingSession && value.isAuthenticated.toString()}
+      </p>
+      <p>
+        My name is:{" "}
+        {value.viewerQuery &&
+          value.viewerQuery.data.viewer.profile &&
+          value.viewerQuery.data.viewer.profile.fullName}
       </p>
     </MainLayout>
   );
