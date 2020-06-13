@@ -8,6 +8,7 @@ import { useAuth } from "../../context/AuthContext";
 const NavBar = () => {
   const { logout } = useAuth();
   const location = useLocation();
+
   return (
     <header>
       <Box

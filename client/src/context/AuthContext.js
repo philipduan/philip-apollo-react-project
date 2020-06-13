@@ -5,15 +5,15 @@ import { GET_VIEWER } from "../graphql/queries";
 import { createApolloClient } from "../graphql/apollo";
 import history from "../routes/history";
 
+const AuthContext = createContext();
+const useAuth = () => useContext(AuthContext);
+
 const initOptions = {
   audience: process.env.REACT_APP_GRAPHQL_ENDPOINT,
   client_id: process.env.REACT_APP_AUTH0_CLIENT_ID,
   domain: process.env.REACT_APP_AUTH0_DOMAIN,
   redirect_uri: process.env.REACT_APP_AUTH0_CALLBACK_URL,
 };
-
-const AuthContext = createContext();
-const useAuth = () => useContext(AuthContext);
 
 const AuthProvider = ({ children }) => {
   const [auth0Client, setAuth0Client] = useState();
@@ -27,24 +27,28 @@ const AuthProvider = ({ children }) => {
         const client = await createAuth0Client(initOptions);
         setAuth0Client(client);
 
-        if (window.location.search.includes("code=")) {
-          await client.handleRedirectCallback();
-          history.replace("/home");
+        if (
+          window.location.search.includes("code=") &&
+          window.location.search.includes("state=")
+        ) {
+          const { appState } = await client.handleRedirectCallback();
+          history.replace(
+            appState && appState.targetUrl
+              ? appState.targetUrl
+              : window.location.pathname
+          );
         }
 
         const authenticated = await client.isAuthenticated();
         setIsAuthenticated(authenticated);
 
-        if (history.location.pathname === "/login" && authenticated) {
-          history.replace("/home");
-        } else if (history.location.pathname === "/login") {
-          history.replace("/");
-        } else if (authenticated) {
+        if (authenticated) {
           const apolloClient = createApolloClient((...p) =>
             client.getTokenSilently(...p)
           );
           const viewer = await apolloClient.query({ query: GET_VIEWER });
           setViewerQuery(viewer);
+          if (history.location.pathname === "/login") history.replace("/home");
         }
       } catch {
         history.location.pathname !== "/" && history.replace("/");
@@ -60,6 +64,7 @@ const AuthProvider = ({ children }) => {
       value={{
         checkingSession,
         isAuthenticated,
+        loginWithRedirect: (...p) => auth0Client.loginWithRedirect(...p),
         getToken: (...p) => auth0Client.getTokenSilently(...p),
         login: (...p) => auth0Client.loginWithRedirect(...p),
         logout: (...p) =>

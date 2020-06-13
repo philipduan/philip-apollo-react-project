@@ -1,13 +1,26 @@
+import { Redirect } from "react-router-dom";
 import { Box } from "grommet";
 import { ChatOption } from "grommet-icons";
 import React from "react";
 
 import { useAuth } from "../../context/AuthContext";
 import AccentButton from "../../components/AccentButton";
+import Loader from "../../components/Loader";
 import MainLayout from "../../layouts/MainLayout";
 
 const Index = () => {
-  const { login } = useAuth();
+  const { checkingSession, isAuthenticated, login, viewerQuery } = useAuth();
+  let viewer;
+
+  if (viewerQuery && viewerQuery.data) {
+    viewer = viewerQuery.data.viewer;
+  }
+
+  if (checkingSession) {
+    return <Loader centered />;
+  } else if (isAuthenticated && viewer) {
+    return <Redirect to="/home" />;
+  }
 
   return (
     <MainLayout centered>

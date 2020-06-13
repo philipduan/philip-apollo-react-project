@@ -22,4 +22,5 @@ const App = () => (
     </ApolloProviderWithAuth>
   </AuthProvider>
 );
+
 ReactDOM.render(<App />, document.getElementById("root"));
