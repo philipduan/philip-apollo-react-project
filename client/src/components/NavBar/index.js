@@ -1,6 +1,6 @@
 import { Anchor, Box, Heading, Menu } from "grommet";
 import { Menu as MenuIcon } from "grommet-icons";
-import { useLocation } from "react-router-dom";
+import { useLocation, useHistory } from "react-router-dom";
 import React from "react";
 
 import { useAuth } from "../../context/AuthContext";
@@ -8,7 +8,7 @@ import { useAuth } from "../../context/AuthContext";
 const NavBar = () => {
   const { logout } = useAuth();
   const location = useLocation();
-
+  const history = useHistory();
   return (
     <header>
       <Box
@@ -31,7 +31,15 @@ const NavBar = () => {
             a11yTitle="User Menu"
             dropAlign={{ right: "right", top: "top" }}
             icon={<MenuIcon color="brand" size="20px" />}
-            items={[{ label: "Logout", onClick: logout }]}
+            items={[
+              {
+                label: "Profile",
+                onClick: () => {
+                  history.push("/profile/philgame");
+                },
+              },
+              { label: "Logout", onClick: logout },
+            ]}
             justifyContent="end"
           />
         )}

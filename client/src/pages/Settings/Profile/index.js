@@ -1,5 +1,6 @@
+import { Redirect } from "react-router-dom";
 import { Text } from "grommet";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 import { useAuth } from "../../../context/AuthContext";
 import CreateProfileForm from "../../../components/CreateProfileForm";
@@ -9,6 +10,11 @@ const Profile = ({ history }) => {
   const [modalOpen, setModalOpen] = useState(true);
   const { viewerQuery, updateViewer } = useAuth();
   const { id, profile } = viewerQuery.data.viewer;
+  const profileRef = useRef(profile);
+
+  if (!profileRef.current && profile) {
+    return <Redirect to={`/profile/${profile.username}`} />;
+  }
 
   return (
     <Modal
@@ -16,7 +22,7 @@ const Profile = ({ history }) => {
         profile &&
         (() => {
           setModalOpen(false);
-          history.push("/profile");
+          history.push(`/profile/${profile.username}`);
         })
       }
       isOpen={modalOpen}
@@ -29,7 +35,7 @@ const Profile = ({ history }) => {
           : "Please create your user profile before proceeding:"}
       </Text>
       {profile ? null : (
-        <CreateProfileForm accountID={id} updateViewer={updateViewer} />
+        <CreateProfileForm accountId={id} updateViewer={updateViewer} />
       )}
     </Modal>
   );

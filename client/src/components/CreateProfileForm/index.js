@@ -1,16 +1,43 @@
 import { Box, Button, Form, FormField } from "grommet";
+import { useMutation } from "@apollo/client";
 import React, { useState } from "react";
 
+import { CREATE_PROFILE } from "../../graphql/mutations";
 import CharacterCountLabel from "../CharacterCountLabel";
+import Loader from "../Loader";
 import RequiredLabel from "../RequiredLabel";
+import { GET_VIEWER } from "../../graphql/queries";
 
 const CreateProfileForm = ({ accountId, updateViewer }) => {
   const [descCharCount, setDescCharCount] = useState(0);
+  const [createProfile, { error, loading }] = useMutation(CREATE_PROFILE, {
+    update: (cache, { data: createProfile }) => {
+      const { viewer } = cache.readQuery({ query: GET_VIEWER });
+      const viewerWithProfile = { ...viewer, profile: createProfile };
+      cache.writeQuery({
+        query: GET_VIEWER,
+        data: { viewer: viewerWithProfile },
+      });
+      updateViewer(viewerWithProfile);
+    },
+  });
   return (
     <Form
       messages={{ required: "Required" }}
       onSubmit={(event) => {
-        console.log("submitted", event.value);
+        createProfile({
+          variables: {
+            data: { accountId, ...event.value },
+          },
+        }).catch((err) => {
+          console.error(err);
+        });
+      }}
+      errors={{
+        username:
+          error &&
+          error.message.includes("duplicate key") &&
+          "Username is already in use",
       }}
     >
       <FormField
@@ -52,7 +79,16 @@ const CreateProfileForm = ({ accountId, updateViewer }) => {
           }
         }}
       />
-      <Button label="Create Profile" primary type="submit" />
+      <Box align="center" direction="row" justify="end">
+        {loading && <Loader size="medium" />}
+        <Button
+          disabled={loading}
+          label="Create Profile"
+          margin={{ left: "xsmall" }}
+          primary
+          type="submit"
+        />
+      </Box>
     </Form>
   );
 };
