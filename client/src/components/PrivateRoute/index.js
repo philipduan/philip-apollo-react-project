@@ -1,28 +1,23 @@
 import { Redirect, Route } from "react-router-dom";
-import React, { useEffect } from "react";
+import React from "react";
 
 import { useAuth } from "../../context/AuthContext";
 import Loader from "../../components/Loader";
 
 const PrivateRoute = ({ component: Component, path, render, ...rest }) => {
-  const {
-    checkingSession,
-    isAuthenticated,
-    loginWithRedirect,
-    viewerQuery,
-  } = useAuth();
+  const { checkingSession, isAuthenticated, viewerQuery } = useAuth();
 
-  useEffect(() => {
-    if (checkingSession || isAuthenticated) {
-      return;
-    }
-    const fn = async () => {
-      await loginWithRedirect({
-        appState: { targetUrl: path },
-      });
-    };
-    fn();
-  }, [checkingSession, isAuthenticated, loginWithRedirect, path]);
+  // useEffect(() => {
+  //   if (checkingSession || isAuthenticated) {
+  //     return;
+  //   }
+  //   const fn = async () => {
+  //     await login({
+  //       appState: { targetUrl: path },
+  //     });
+  //   };
+  //   fn();
+  // }, [checkingSession, isAuthenticated, login, path]);
 
   const renderRoute = (props) => {
     let content = null;

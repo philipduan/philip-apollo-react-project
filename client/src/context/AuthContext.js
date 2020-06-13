@@ -31,24 +31,30 @@ const AuthProvider = ({ children }) => {
           window.location.search.includes("code=") &&
           window.location.search.includes("state=")
         ) {
-          const { appState } = await client.handleRedirectCallback();
-          history.replace(
-            appState && appState.targetUrl
-              ? appState.targetUrl
-              : window.location.pathname
-          );
+          await client.handleRedirectCallback();
+          history.replace("/home");
+          // const { appState } = await client.handleRedirectCallback();
+          // history.replace(
+          //   appState && appState.targetUrl
+          //     ? appState.targetUrl
+          //     : window.location.pathname
+          // );
         }
 
         const authenticated = await client.isAuthenticated();
         setIsAuthenticated(authenticated);
 
-        if (authenticated) {
+        if (history.location.pathname === "/login" && authenticated) {
+          history.replace("/home");
+        } else if (history.location.pathname === "/login") {
+          history.replace("/");
+        } else if (authenticated) {
           const apolloClient = createApolloClient((...p) =>
             client.getTokenSilently(...p)
           );
           const viewer = await apolloClient.query({ query: GET_VIEWER });
           setViewerQuery(viewer);
-          if (history.location.pathname === "/login") history.replace("/home");
+          // if (history.location.pathname === "/login") history.replace("/home");
         }
       } catch {
         history.location.pathname !== "/" && history.replace("/");
