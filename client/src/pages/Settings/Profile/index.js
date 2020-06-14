@@ -4,6 +4,7 @@ import React, { useRef, useState } from "react";
 
 import { useAuth } from "../../../context/AuthContext";
 import CreateProfileForm from "../../../components/CreateProfileForm";
+import EditProfileForm from "../../../components/EditProfileForm";
 import Modal from "../../../components/Modal";
 
 const Profile = ({ history }) => {
@@ -34,7 +35,9 @@ const Profile = ({ history }) => {
           ? "Update your user information below:"
           : "Please create your user profile before proceeding:"}
       </Text>
-      {profile ? null : (
+      {profile ? (
+        <EditProfileForm profileData={profile} updateViewer={updateViewer} />
+      ) : (
         <CreateProfileForm accountId={id} updateViewer={updateViewer} />
       )}
     </Modal>

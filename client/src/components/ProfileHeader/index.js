@@ -1,4 +1,6 @@
 import { Box, Button, Heading, Image, Text } from "grommet";
+import { useHistory } from "react-router-dom";
+import moment from "moment";
 import React from "react";
 
 import { useAuth } from "../../context/AuthContext";
@@ -7,10 +9,19 @@ const ProfileHeader = ({ profileData }) => {
 
   const value = useAuth();
   const { username: viewerUsername } = value.viewerQuery.data.viewer.profile;
+  const history = useHistory();
 
   const renderButton = () => {
     if (username === viewerUsername) {
-      return <Button label="Edit Profile" primary />;
+      return (
+        <Button
+          label="Edit Profile"
+          onClick={() => {
+            history.push("/settings/profile");
+          }}
+          primary
+        />
+      );
     }
     return null;
   };
@@ -42,7 +53,7 @@ const ProfileHeader = ({ profileData }) => {
           {description ? description : "404: description not found."}
         </Text>
         <Text as="p" margin={{ bottom: "small" }}>
-          Joined: {account.createdAt}
+          Joined: {moment(account.createdAt).format("MMMM YYYY")}
         </Text>
       </Box>
       <Box alignSelf="start">{renderButton()}</Box>

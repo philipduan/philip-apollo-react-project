@@ -1,36 +1,55 @@
-import { Box, Button, Form, FormField, TextInput } from "grommet";
+import { Box, Button, Form, FormField, Text, TextInput } from "grommet";
 import { useMutation } from "@apollo/client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-import { CREATE_PROFILE } from "../../graphql/mutations";
+import { GET_VIEWER } from "../../graphql/queries";
+import { UPDATE_PROFILE } from "../../graphql/mutations";
 import CharacterCountLabel from "../CharacterCountLabel";
 import Loader from "../Loader";
 import RequiredLabel from "../RequiredLabel";
-import { GET_VIEWER } from "../../graphql/queries";
 
-const CreateProfileForm = ({ accountId, updateViewer }) => {
-  const [descCharCount, setDescCharCount] = useState(0);
-  const [usernameField, setUsernameField] = useState("");
-  const [fullNameField, setFullNameField] = useState("");
-  const [descriptionField, setDescriptionField] = useState("");
-  const [createProfile, { error, loading }] = useMutation(CREATE_PROFILE, {
-    update: (cache, { data: createProfile }) => {
+const EditProfileForm = ({ profileData, updateViewer }) => {
+  const { description, fullName, username } = profileData;
+
+  const [descCharCount, setDescCharCount] = useState(
+    (description && description.length) || 0
+  );
+  const [usernameField, setUsernameField] = useState(username || "");
+  const [fullNameField, setFullNameField] = useState(fullName || "");
+  const [descriptionField, setDescriptionField] = useState(description || "");
+  const [showSaveMessage, setShowSaveMessage] = useState(false);
+  const [updateProfile, { error, loading }] = useMutation(UPDATE_PROFILE, {
+    udpate: (cache, { data: { updateProfile } }) => {
       const { viewer } = cache.readQuery({ query: GET_VIEWER });
-      const viewerWithProfile = { ...viewer, profile: createProfile };
+      const viewerWithProfile = { ...viewer, profile: updateProfile };
       cache.writeQuery({
         query: GET_VIEWER,
         data: { viewer: viewerWithProfile },
       });
       updateViewer(viewerWithProfile);
     },
+    onCompleted: () => {
+      setShowSaveMessage(true);
+    },
   });
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowSaveMessage(false);
+    }, 3000);
+    return () => {
+      clearTimeout(timer);
+    };
+  });
+
   return (
     <Form
       messages={{ required: "Required" }}
       onSubmit={(event) => {
-        createProfile({
+        updateProfile({
           variables: {
-            data: { accountId, ...event.value },
+            data: { ...event.value },
+            where: { username },
           },
         }).catch((err) => {
           console.error(err);
@@ -107,9 +126,10 @@ const CreateProfileForm = ({ accountId, updateViewer }) => {
       </FormField>
       <Box align="center" direction="row" justify="end">
         {loading && <Loader size="medium" />}
+        {showSaveMessage && <Text as="p">Changes Saved!</Text>}
         <Button
           disabled={loading}
-          label="Create Profile"
+          label="Save Profile"
           margin={{ left: "xsmall" }}
           primary
           type="submit"
@@ -119,4 +139,4 @@ const CreateProfileForm = ({ accountId, updateViewer }) => {
   );
 };
 
-export default CreateProfileForm;
+export default EditProfileForm;
