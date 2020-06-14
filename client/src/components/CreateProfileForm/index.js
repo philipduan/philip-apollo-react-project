@@ -14,7 +14,7 @@ const CreateProfileForm = ({ accountId, updateViewer }) => {
   const [fullNameField, setFullNameField] = useState("");
   const [descriptionField, setDescriptionField] = useState("");
   const [createProfile, { error, loading }] = useMutation(CREATE_PROFILE, {
-    update: (cache, { data: createProfile }) => {
+    update: (cache, { data: { createProfile } }) => {
       const { viewer } = cache.readQuery({ query: GET_VIEWER });
       const viewerWithProfile = { ...viewer, profile: createProfile };
       cache.writeQuery({
