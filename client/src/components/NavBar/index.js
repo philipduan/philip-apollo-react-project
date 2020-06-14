@@ -6,7 +6,7 @@ import React from "react";
 import { useAuth } from "../../context/AuthContext";
 
 const NavBar = () => {
-  const { logout } = useAuth();
+  const { logout, viewerQuery } = useAuth();
   const location = useLocation();
   const history = useHistory();
   return (
@@ -35,7 +35,9 @@ const NavBar = () => {
               {
                 label: "Profile",
                 onClick: () => {
-                  history.push("/profile/philgame");
+                  history.push(
+                    `/profile/${viewerQuery.data.viewer.profile.username}`
+                  );
                 },
               },
               { label: "Logout", onClick: logout },

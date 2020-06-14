@@ -9,3 +9,37 @@ export const basicProfile = gql`
     username
   }
 `;
+
+export const basicPost = gql`
+  fragment basicPost on Post {
+    id
+    author {
+      avatar
+      fullName
+      username
+    }
+    createdAt
+    isBlocked
+    text
+  }
+`;
+
+export const basicReply = gql`
+  fragment basicReply on Reply {
+    id
+    author {
+      avatar
+      fullName
+      username
+    }
+    createdAt
+    isBlocked
+    post {
+      id
+    }
+    postAuthor {
+      username
+    }
+    text
+  }
+`;

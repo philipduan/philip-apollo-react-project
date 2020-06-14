@@ -8,8 +8,9 @@ import { setContext } from "@apollo/link-context";
 import React from "react";
 
 import { useAuth } from "../context/AuthContext";
+import typePolicies from "./typePolicies";
 
-const cache = new InMemoryCache();
+const cache = new InMemoryCache({ typePolicies });
 
 const createApolloClient = (getToken) => {
   const httpLink = new createHttpLink({
