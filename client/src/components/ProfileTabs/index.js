@@ -4,6 +4,7 @@ import { useQuery } from "@apollo/client";
 import React from "react";
 
 import { GET_PROFILE_CONTENT } from "../../graphql/queries";
+import { updateSubfieldPageResults } from "../../lib/updateQueries";
 import ContentList from "../../components/ContentList";
 import Loader from "../Loader";
 import LoadMoreButton from "../LoadMoreButton";
@@ -42,29 +43,13 @@ const ProfileTabs = ({ username }) => {
                         variables: {
                           postsCursor: posts.pageInfo.endCursor,
                         },
-                        updateQuery: (previousResult, { fetchMoreResult }) => {
-                          const {
-                            edges: newEdges,
-                            pageInfo,
-                          } = fetchMoreResult.profile.posts;
-
-                          return newEdges.length
-                            ? {
-                                profile: {
-                                  ...previousResult.profile,
-                                  posts: {
-                                    __typename:
-                                      previousResult.profile.posts.__typename,
-                                    edges: [
-                                      ...previousResult.profile.posts.edges,
-                                      ...newEdges,
-                                    ],
-                                    pageInfo,
-                                  },
-                                },
-                              }
-                            : previousResult;
-                        },
+                        updateQuery: (previousResult, { fetchMoreResult }) =>
+                          updateSubfieldPageResults(
+                            "profile",
+                            "posts",
+                            fetchMoreResult,
+                            previousResult
+                          ),
                       });
                     }}
                   />
