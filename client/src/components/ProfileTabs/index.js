@@ -68,7 +68,29 @@ const ProfileTabs = ({ username }) => {
       >
         <Box margin={{ top: "medium" }}>
           {replies.edges.length ? (
-            <ContentList contentData={replies.edges} />
+            <>
+              <ContentList contentData={replies.edges} />
+              {replies.pageInfo.hasNextPage && (
+                <Box direction="row" justify="center">
+                  <LoadMoreButton
+                    onClick={() => {
+                      fetchMore({
+                        variables: {
+                          repliesCursor: replies.pageInfo.endCursor,
+                        },
+                        updateQuery: (previousResult, { fetchMoreResult }) =>
+                          updateSubfieldPageResults(
+                            "profile",
+                            "replies",
+                            fetchMoreResult,
+                            previousResult
+                          ),
+                      });
+                    }}
+                  />
+                </Box>
+              )}
+            </>
           ) : (
             <Text as="p">No replies to display yet!</Text>
           )}
@@ -81,7 +103,29 @@ const ProfileTabs = ({ username }) => {
       >
         <Box margin={{ top: "medium" }}>
           {following.edges.length ? (
-            <ProfileList profileData={following.edges} />
+            <>
+              <ProfileList profileData={following.edges} />
+              {following.pageInfo.hasNextPage && (
+                <Box direction="row" justify="center">
+                  <LoadMoreButton
+                    onClick={() => {
+                      fetchMore({
+                        variables: {
+                          followingCursor: following.pageInfo.endCursor,
+                        },
+                        updateQuery: (previousResult, { fetchMoreResult }) =>
+                          updateSubfieldPageResults(
+                            "profile",
+                            "following",
+                            fetchMoreResult,
+                            previousResult
+                          ),
+                      });
+                    }}
+                  />
+                </Box>
+              )}
+            </>
           ) : (
             <Text as="p">No followed users to display yet!</Text>
           )}

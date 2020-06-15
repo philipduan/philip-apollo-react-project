@@ -33,7 +33,7 @@ export const GET_PROFILE_CONTENT = gql`
   ) {
     profile(username: $username) {
       id
-      following(first: 2, after: $followingCursor) {
+      following(first: 30, after: $followingCursor) {
         edges {
           node {
             ...basicProfile
@@ -41,7 +41,7 @@ export const GET_PROFILE_CONTENT = gql`
         }
         ...profilesNextPage
       }
-      posts(first: 4, after: $postsCursor) {
+      posts(first: 30, after: $postsCursor) {
         edges {
           node {
             ...basicPost
@@ -49,7 +49,7 @@ export const GET_PROFILE_CONTENT = gql`
         }
         ...postsNextPage
       }
-      replies(first: 4, after: $repliesCursor) {
+      replies(first: 30, after: $repliesCursor) {
         edges {
           node {
             ...basicReply
