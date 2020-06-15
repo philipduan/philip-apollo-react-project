@@ -6,10 +6,12 @@ import React from "react";
 import { GET_PROFILE_CONTENT } from "../../graphql/queries";
 import ContentList from "../../components/ContentList";
 import Loader from "../Loader";
+import LoadMoreButton from "../LoadMoreButton";
+import ProfileList from "../ProfileList";
 import RichTabTitle from "../RichTabTitle";
 
 const ProfileTabs = ({ username }) => {
-  const { data, loading } = useQuery(GET_PROFILE_CONTENT, {
+  const { data, fetchMore, loading } = useQuery(GET_PROFILE_CONTENT, {
     variables: { username },
   });
 
@@ -30,7 +32,45 @@ const ProfileTabs = ({ username }) => {
       <Tab title={<RichTabTitle icon={<Note />} label="Posts" size="xsmall" />}>
         <Box margin={{ top: "medium" }}>
           {posts.edges.length ? (
-            <ContentList contentData={posts.edges} />
+            <>
+              <ContentList contentData={posts.edges} />
+              {posts.pageInfo.hasNextPage && (
+                <Box direction="row" justify="center">
+                  <LoadMoreButton
+                    onClick={() => {
+                      fetchMore({
+                        variables: {
+                          postsCursor: posts.pageInfo.endCursor,
+                        },
+                        updateQuery: (previousResult, { fetchMoreResult }) => {
+                          const {
+                            edges: newEdges,
+                            pageInfo,
+                          } = fetchMoreResult.profile.posts;
+
+                          return newEdges.length
+                            ? {
+                                profile: {
+                                  ...previousResult.profile,
+                                  posts: {
+                                    __typename:
+                                      previousResult.profile.posts.__typename,
+                                    edges: [
+                                      ...previousResult.profile.posts.edges,
+                                      ...newEdges,
+                                    ],
+                                    pageInfo,
+                                  },
+                                },
+                              }
+                            : previousResult;
+                        },
+                      });
+                    }}
+                  />
+                </Box>
+              )}
+            </>
           ) : (
             <Text as="p">No posts to display yet!</Text>
           )}
@@ -54,7 +94,13 @@ const ProfileTabs = ({ username }) => {
           <RichTabTitle icon={<Group />} label="Following" size="xsmall" />
         }
       >
-        <p>Followed users go here</p>
+        <Box margin={{ top: "medium" }}>
+          {following.edges.length ? (
+            <ProfileList profileData={following.edges} />
+          ) : (
+            <Text as="p">No followed users to display yet!</Text>
+          )}
+        </Box>
       </Tab>
     </Tabs>
   );
