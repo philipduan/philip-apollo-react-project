@@ -32,7 +32,7 @@
     "gravatar-url": "^3.1.0",
     "jwks-rsa": "^1.8.1",
     "mongoose": "^5.9.23",
-    "validator": "^12.2.0",
+    "validator": "^13.7.0",
     "wait-on": "^4.0.2"
   },
   "devDependencies": {
