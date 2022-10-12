@@ -18,7 +18,7 @@
     "@apollo/federation": "^0.13.2",
     "@apollo/gateway": "^0.13.2",
     "apollo-datasource": "^0.7.2",
-    "apollo-server": "^2.15.1",
+    "apollo-server": "^2.25.4",
     "apollo-server-express": "^2.15.1",
     "auth0": "^2.27.1",
     "cors": "^2.8.5",
